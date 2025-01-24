@@ -7,7 +7,7 @@ import google.generativeai as genai
 
 genai.configure(api_key="AIzaSyAawh0tRqyCOsyz7x9GxVbV_tkUzBsZ59s")
 API_ENDPOINT = "https://api.stability.ai/v2beta/stable-image/control/sketch"
-API_KEY = "sk-3LZww78cLrgu2vHIMCocq80KIF4NmMBE0JpYmjqAGRYpkuLm"
+API_KEY = 'sk-zZHk3X8faxcOdysA3e4F6lhNNIkwaTY9dqwAZNSxtLowlijS'
 # Function to generate a short story from an image using Gemini 1.5
 def generate_stry(image_path, age_group="5-8", language='en'):
     # Open the image file
