@@ -6,7 +6,8 @@ import io
 import google.generativeai as genai
 
 genai.configure(api_key="AIzaSyAawh0tRqyCOsyz7x9GxVbV_tkUzBsZ59s")
-
+API_ENDPOINT = "https://api.stability.ai/v2beta/stable-image/control/sketch"
+API_KEY = "sk-3LZww78cLrgu2vHIMCocq80KIF4NmMBE0JpYmjqAGRYpkuLm"
 # Function to generate a short story from an image using Gemini 1.5
 def generate_stry(image_path, age_group="5-8", language='en'):
     # Open the image file
@@ -28,6 +29,30 @@ def generate_stry(image_path, age_group="5-8", language='en'):
 
     # Return the generated story
     return response.text
+def generate_image_from_sketch(image_bytes, prompt, control_strength=0.7, output_format="webp"):
+    """
+    Send sketch and prompt to Stability AI API to generate an image.
+    """
+    headers = {
+        "authorization": f"Bearer {API_KEY}",
+        "accept": "image/*",
+    }
+    files = {
+        "image": ("sketch.png", image_bytes, "image/png"),
+    }
+    data = {
+        "prompt": prompt,
+        "control_strength": control_strength,
+        "output_format": output_format,
+    }
+
+    response = requests.post(API_ENDPOINT, headers=headers, files=files, data=data)
+
+    if response.status_code == 200:
+        return response.content  # Return the generated image content
+    else:
+        st.error(f"Error: {response.json()}")
+        return None
 
 
 # Main function for Streamlit app
@@ -76,10 +101,15 @@ def main():
                 # Show the generated story
                 st.subheader("Generated Story Based on the Image:")
                 st.write(story)
+                description = story  # You can adjust here by processing the image via a model for description
 
+                # Generate creative story based on the image
+                st.write("Generating story based on the image...")
+                images = generate_image_from_sketch(image_bytes, story, 0.7)
                 # Show the drawn image
+
                 st.subheader("Your Drawn Image:")
-                st.image(image, caption="Your Sketch", use_column_width=True)
+                st.image(images)
 
 
 if __name__ == "__main__":
